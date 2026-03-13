@@ -1,0 +1,3 @@
+@echo off
+echo Generating Karate API Test Report...
+powershell -ExecutionPolicy Bypass -File "C:\Users\Suresh Kumar PR\Documents\Divya_Project\generate-report.ps1"
