@@ -13,7 +13,7 @@ class SimpleTestRunner {
     @BeforeAll
     public static void setup() {
         System.setProperty("karate.env", "dev");
-        System.setProperty("karate.config.dir", "classpath:karate-config");
+        System.setProperty("karate.config.dir", "src/test/java");
     }
 
     @Test
