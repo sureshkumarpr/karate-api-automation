@@ -77,8 +77,14 @@ public class ReportGenerator {
                "        .author-info h3 { color: #1976d2; margin: 10px 0; }\n" +
                "        .author-info p { margin: 5px 0; font-weight: bold; }\n" +
                "        .guide-info { background: #f3e5f5; padding: 10px; border-radius: 8px; margin: 10px 0; }\n" +
-               "        .guide-info a { color: #7b1fa2; text-decoration: none; font-weight: bold; }\n" +
+               "        .guide-info a { color: #7b1fa2; text-decoration: none; font-weight: bold; animation: blink 1s infinite; }\n" +
                "        .guide-info a:hover { text-decoration: underline; }\n" +
+               "        .powered-by { background: #1a237e; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; font-weight: bold; }\n" +
+               "        .powered-by h3 { color: #ffc107; margin: 10px 0; }\n" +
+               "        @keyframes blink {\n" +
+               "            0%, 50% { opacity: 1; }\n" +
+               "            51%, 100% { opacity: 0.3; }\n" +
+               "        }\n" +
                "        .progress { width: 100%; height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden; margin: 10px 0; }\n" +
                "        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #20c997); width: 100%; transition: width 0.3s ease; }\n" +
                "    </style>\n" +
@@ -135,6 +141,11 @@ public class ReportGenerator {
                "        <div class=\"guide-info\">\n" +
                "            <h3>👨‍🏫 Project Guide</h3>\n" +
                "            <p><strong>Name:</strong> <a href=\"#\">Prabhu.G, MSc(CS), MPhil</a></p>\n" +
+               "        </div>\n" +
+               "        \n" +
+               "        <div class=\"powered-by\">\n" +
+               "            <h3>🚀 Powered By OSS JAVA HUB</h3>\n" +
+               "            <p>Chennai, Tamilnadu, India</p>\n" +
                "        </div>\n" +
                "        \n" +
                "        <div class=\"footer\">\n" +
