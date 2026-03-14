@@ -11,12 +11,7 @@ class BasicTestRunner {
 
     @Test
     void testBasicKarate() {
-        // Run a simple inline test that doesn't require external config
-        Karate.run().scenario(
-            "Feature: Basic Test\n" +
-            "Scenario: Simple test\n" +
-            "* def value = 'hello'\n" +
-            "* match value == 'hello'\n"
-        );
+        // Run the basic test feature file
+        Karate.run("classpath:features/basic/basic-test.feature").tags("~@ignore");
     }
 }
