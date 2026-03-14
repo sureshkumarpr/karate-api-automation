@@ -113,7 +113,7 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <includes>
-                        <include>**/RealApiTestRunner.java</include>
+                        <include>**/SimpleWorkingTestRunner.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/performance/**</exclude>
