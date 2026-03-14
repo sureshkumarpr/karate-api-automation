@@ -113,13 +113,14 @@
                 <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <includes>
-                        <include>**/BasicTestRunner.java</include>
+                        <include>**/WorkingTestRunner.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/performance/**</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <karate.config.dir>src/test/java</karate.config.dir>
+                        <karate.options>--report-dir,target/karate-reports</karate.options>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
