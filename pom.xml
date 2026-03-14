@@ -98,6 +98,12 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <excludes>
+                        <exclude>**/performance/**</exclude>
+                    </excludes>
+                    <testExcludes>
+                        <exclude>**/performance/**</exclude>
+                    </testExcludes>
                 </configuration>
             </plugin>
 
