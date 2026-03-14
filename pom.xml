@@ -49,14 +49,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Karate Gatling Integration for Performance Testing -->
-        <dependency>
-            <groupId>com.intuit.karate</groupId>
-            <artifactId>karate-gatling</artifactId>
-            <version>${karate.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -119,8 +111,7 @@
                         <include>**/*Runner.java</include>
                     </includes>
                     <excludes>
-                        <exclude>**/performance/*Test.java</exclude>
-                        <exclude>**/performance/*.java</exclude>
+                        <exclude>**/performance/**</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <karate.config.dir>src/test/java/karate-config</karate.config.dir>
