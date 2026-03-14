@@ -21,6 +21,10 @@ public class LandingPageGenerator {
         try {
             // Create target directory if it doesn't exist
             Files.createDirectories(Paths.get("target"));
+            Files.createDirectories(Paths.get("target/images"));
+            
+            // Copy images to target directory
+            copyImages();
             
             String htmlContent = generateLandingPageContent();
             
@@ -32,6 +36,22 @@ public class LandingPageGenerator {
             
         } catch (IOException e) {
             System.err.println("Error generating landing page: " + e.getMessage());
+        }
+    }
+    
+    private static void copyImages() {
+        try {
+            // Copy office image
+            Files.copy(Paths.get("src/test/java/images/office.jpg"), 
+                      Paths.get("target/images/office.jpg"));
+            
+            // Copy shopping cart image  
+            Files.copy(Paths.get("src/test/java/images/shopping-cart.jpg"), 
+                      Paths.get("target/images/shopping-cart.jpg"));
+            
+            System.out.println("Images copied to target/images/");
+        } catch (IOException e) {
+            System.err.println("Error copying images: " + e.getMessage());
         }
     }
     
@@ -55,8 +75,8 @@ public class LandingPageGenerator {
                "        .card { background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: fadeInUp 1s ease; }\n" +
                "        .card h2 { color: #2c3e50; margin-bottom: 20px; font-size: 1.8em; }\n" +
                "        .image-container { text-align: center; margin: 20px 0; }\n" +
-               "        .office-image { width: 100%; max-width: 400px; height: 250px; background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 250\"><rect fill=\"%23e3f2fd\" width=\"400\" height=\"250\"/><text x=\"200\" y=\"125\" text-anchor=\"middle\" fill=\"%231976d2\" font-size=\"16\" font-family=\"Arial\">OSS JAVA HUB Office</text><rect x=\"50\" y=\"50\" fill=\"%23f44336\" width=\"80\" height=\"150\"/><rect x=\"150\" y=\"30\" fill=\"%232196f3\" width=\"80\" height=\"170\"/><rect x=\"250\" y=\"70\" fill=\"%234caf50\" width=\"80\" height=\"130\"/></svg>') center/cover; border-radius: 10px; margin: 0 auto; }\n" +
-               "        .cart-image { width: 100%; max-width: 300px; height: 200px; background: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 300 200\"><rect fill=\"%23fff3e0\" width=\"300\" height=\"200\"/><circle cx=\"80\" cy=\"100\" r=\"30\" fill=\"%23ff9800\"/><circle cx=\"220\" cy=\"100\" r=\"30\" fill=\"%23ff9800\"/><rect x=\"60\" y=\"80\" width=\"180\" height=\"40\" fill=\"%23795548\" rx=\"5\"/><text x=\"150\" y=\"180\" text-anchor=\"middle\" fill=\"%23e65100\" font-size=\"14\" font-family=\"Arial\">Shopping Cart</text></svg>') center/cover; border-radius: 10px; margin: 0 auto; }\n" +
+               "        .office-image { width: 100%; max-width: 400px; height: 250px; background: url('images/office.jpg') center/cover; border-radius: 10px; margin: 0 auto; }\n" +
+               "        .cart-image { width: 100%; max-width: 300px; height: 200px; background: url('images/shopping-cart.jpg') center/cover; border-radius: 10px; margin: 0 auto; }\n" +
                "        .info-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin: 20px 0; color: white; }\n" +
                "        .info-section h3 { color: #ffc107; margin-bottom: 10px; }\n" +
                "        .info-section p { margin: 5px 0; font-weight: bold; }\n" +
