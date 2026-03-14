@@ -11,8 +11,8 @@ class CompleteTestRunner {
 
     @Test
     void testBasicKarate() {
-        // Run basic test
-        Karate.run("classpath:features/basic/basic-test.feature");
+        // Run all feature files
+        Karate.run("classpath:features").tags("~@ignore");
         
         // Generate custom HTML report after test execution
         ReportGenerator.generateHtmlReport();
