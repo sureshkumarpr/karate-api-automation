@@ -45,10 +45,10 @@ public class ReportGenerator {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         
         // Get real test results or use defaults
-        int totalTests = results != null ? results.getScenarioCount() : 16;
-        int passedTests = results != null ? results.getPassedCount() : 14;
-        int failedTests = results != null ? results.getFailedCount() : 2;
-        int skippedTests = results != null ? results.getSkippedCount() : 0;
+        int totalTests = results != null ? results.getScenarios().size() : 16;
+        int passedTests = results != null ? (int) results.getScenarios().stream().filter(s -> s.isPassed()).count() : 14;
+        int failedTests = results != null ? (int) results.getScenarios().stream().filter(s -> s.isFailed()).count() : 2;
+        int skippedTests = results != null ? (int) results.getScenarios().stream().filter(s -> s.isSkipped()).count() : 0;
         double executionTime = results != null ? results.getTotalTime() / 1000.0 : 3.2;
         
         return "<!DOCTYPE html>\n" +
@@ -73,6 +73,12 @@ public class ReportGenerator {
                "        .warning { background: #ffc107; color: #212529; }\n" +
                "        .danger { background: #dc3545; color: white; }\n" +
                "        .footer { text-align: center; margin-top: 30px; color: #7f8c8d; }\n" +
+               "        .author-info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }\n" +
+               "        .author-info h3 { color: #1976d2; margin: 10px 0; }\n" +
+               "        .author-info p { margin: 5px 0; font-weight: bold; }\n" +
+               "        .guide-info { background: #f3e5f5; padding: 10px; border-radius: 8px; margin: 10px 0; }\n" +
+               "        .guide-info a { color: #7b1fa2; text-decoration: none; font-weight: bold; }\n" +
+               "        .guide-info a:hover { text-decoration: underline; }\n" +
                "        .progress { width: 100%; height: 20px; background: #e9ecef; border-radius: 10px; overflow: hidden; margin: 10px 0; }\n" +
                "        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #20c997); width: 100%; transition: width 0.3s ease; }\n" +
                "    </style>\n" +
@@ -117,6 +123,18 @@ public class ReportGenerator {
                "            <p><strong>Success Rate:</strong> " + String.format("%.1f", (passedTests * 100.0 / totalTests)) + "%</p>\n" +
                "            <p><strong>Environment:</strong> dev</p>\n" +
                "            <p><strong>Karate Version:</strong> 1.4.0</p>\n" +
+               "        </div>\n" +
+               "        \n" +
+               "        <div class=\"author-info\">\n" +
+               "            <h3>👨‍💻 Project Author</h3>\n" +
+               "            <p><strong>Name:</strong> Divya.V</p>\n" +
+               "            <p><strong>Qualification:</strong> II MSc (Computer Science)</p>\n" +
+               "            <p><strong>Institution:</strong> Gobi Arts and Science College (Autonomous)</p>\n" +
+               "        </div>\n" +
+               "        \n" +
+               "        <div class=\"guide-info\">\n" +
+               "            <h3>👨‍🏫 Project Guide</h3>\n" +
+               "            <p><strong>Name:</strong> <a href=\"#\">Prabhu.G, MSc(CS), MPhil</a></p>\n" +
                "        </div>\n" +
                "        \n" +
                "        <div class=\"footer\">\n" +
