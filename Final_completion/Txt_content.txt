@@ -1,7 +1,0 @@
-This is to certify that Ms. V. Divya, a final year M.Sc. Computer Science student of Gobi Arts & Science College (Autonomous), Gobichettipalayam, has been permitted to undertake her academic project at OSS JAVA HUB, titled “API Test Automation Framework for E-Commerce using Karate”, under the guidance and supervision of the undersigned. 
-
-The project work will be carried out in online (remote) mode using the digital infrastructure and guidance provided by OSS JAVA HUB, for the partial fulfilment of the requirements of the M.Sc. Computer Science degree.
-
-During the online project period, Ms. V. Divya will coordinate with the organisation through email, conferencing tools and other online communication channels as required.
-
-This letter is being issued on the specific request of the student for submission to her institution, without any responsibility on the part of OSS JAVA HUB beyond the scope mentioned above.
