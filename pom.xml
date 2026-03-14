@@ -21,7 +21,7 @@
                 <role>Test Engineer</role>
             </roles>
             <organization>Gobi Arts and Science College (Autonomous)</organization>
-            <organizationUrl>https://www.gobiacs.ac.in</organization>
+            <organizationUrl>https://www.gobiacs.ac.in</organizationUrl>
             <properties>
                 <degree>II MSc Computer Science</degree>
                 <location>Gobichettipalayam, Erode District</location>
@@ -121,25 +121,6 @@
                     <systemPropertyVariables>
                         <karate.config.dir>src/test/java/karate-config</karate.config.dir>
                     </systemPropertyVariables>
-                </configuration>
-            </plugin>
-
-            <!-- Karate Maven Plugin for Parallel Execution -->
-            <plugin>
-                <groupId>com.intuit.karate</groupId>
-                <artifactId>karate-maven-plugin</artifactId>
-                <version>${karate.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <skip>false</skip>
-                    <parallel>true</parallel>
-                    <threadCount>4</threadCount>
                 </configuration>
             </plugin>
         </plugins>
