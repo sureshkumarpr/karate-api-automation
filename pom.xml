@@ -130,13 +130,14 @@
                 <version>3.1.0</version>
                 <executions>
                     <execution>
-                        <id>generate-html-report</id>
+                        <id>generate-html-reports</id>
                         <phase>test</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
                         <configuration>
                             <mainClass>com.ecommerce.karate.ReportGenerator</mainClass>
+                            <classpathScope>test</classpathScope>
                         </configuration>
                     </execution>
                 </executions>
