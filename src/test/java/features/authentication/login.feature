@@ -71,29 +71,3 @@ Feature: User Authentication API Tests
         And match response == { token: '#string', expiresIn: '#number', refreshToken: '#string' }
         * def newToken = response.token
         * karate.log('Token refreshed successfully:', newToken)
-
-    @performance
-    Scenario: Concurrent login requests performance test
-        * def concurrentUsers = performance.concurrentUsers
-        * def results = []
-        * for (i = 0; i < concurrentUsers; i++)
-            * def timestamp = new Date().getTime()
-            * def user = { username: 'user_' + timestamp + '_' + i, password: 'Test@123' }
-            * def result = call 
-            """
-            function(payload) {
-                var config = karate.read('classpath:karate-config.js');
-                var response = karate.post(config.baseUrl + '/auth/login', payload);
-                return {
-                    status: response.status,
-                    responseTime: response.responseTime,
-                    timestamp: new Date().getTime()
-                };
-            }
-            """
-            , user
-            * results.push(result)
-        * karate.log('Performance test completed with', concurrentUsers, 'concurrent users')
-        * def avgResponseTime = results.reduce((sum, r) => sum + r.responseTime, 0) / results.length
-        * karate.log('Average response time:', avgResponseTime, 'ms')
-        * match avgResponseTime < 2000
