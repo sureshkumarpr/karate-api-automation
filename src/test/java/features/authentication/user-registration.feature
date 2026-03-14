@@ -36,10 +36,10 @@ Feature: User Registration API Tests
 
         Examples:
             | username | email           | password | firstName | lastName | status | field     | errorCode           |
-            |          | test@test.com   | Pass123  | Test      | User     | 400    | username  | INVALID_USERNAME    |
-            | user123  |                 | Pass123  | Test      | User     | 400    | email     | INVALID_EMAIL       |
-            | user123  | test@test.com   |          | Test      | User     | 400    | password  | INVALID_PASSWORD    |
-            |          |                 |          |           |          | 400    | multiple | MISSING_FIELDS      |
+            | null     | test@test.com   | Pass123  | Test      | User     | 400    | username  | INVALID_USERNAME    |
+            | user123  | null            | Pass123  | Test      | User     | 400    | email     | INVALID_EMAIL       |
+            | user123  | test@test.com   | null     | Test      | User     | 400    | password  | INVALID_PASSWORD    |
+            | null     | null            | null     | null      | null     | 400    | multiple | MISSING_FIELDS      |
             | ab       | test@test.com   | Pass123  | Test      | User     | 400    | username  | USERNAME_TOO_SHORT  |
             | user123  | invalid-email   | Pass123  | Test      | User     | 400    | email     | INVALID_EMAIL_FORMAT |
 
