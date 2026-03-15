@@ -215,6 +215,7 @@ public class SinglePageGenerator {
                "        \n" +
                "        <!-- Test Report Section -->\n" +
                "        <div id=\"test-report\" class=\"content-section\">\n" +
+               "            <button class=\"back-btn\" onclick=\"goBack()\">← Back to Previous</button>\n" +
                "            <div class=\"card\">\n" +
                "                <h2>Test Execution Report</h2>\n" +
                "                <div class=\"stats\">\n" +
@@ -268,6 +269,7 @@ public class SinglePageGenerator {
                "        \n" +
                "        <!-- API Endpoints Section -->\n" +
                "        <div id=\"endpoints\" class=\"content-section\">\n" +
+               "            <button class=\"back-btn\" onclick=\"goBack()\">← Back to Previous</button>\n" +
                generateEndpointCards() +
                "        </div>\n" +
                "        \n" +
@@ -278,7 +280,15 @@ public class SinglePageGenerator {
                "    </div>\n" +
                "    \n" +
                "    <script>\n" +
+               "        // Store previous tab state\n" +
+               "        let previousTab = 'overview';\n" +
+               "        \n" +
                "        function showSection(sectionId) {\n" +
+               "            // Store current tab as previous before switching\n" +
+               "            if (sectionId !== 'overview') {\n" +
+               "                previousTab = sectionId;\n" +
+               "            }\n" +
+               "            \n" +
                "            // Hide all sections\n" +
                "            const sections = document.querySelectorAll('.content-section');\n" +
                "            sections.forEach(section => section.classList.remove('active'));\n" +
@@ -293,6 +303,21 @@ public class SinglePageGenerator {
                "            // Add active class to clicked tab\n" +
                "            event.target.classList.add('active');\n" +
                "        }\n" +
+               "        \n" +
+               "        function goBack() {\n" +
+               "            if (previousTab && previousTab !== 'overview') {\n" +
+               "                showSection(previousTab);\n" +
+               "            } else {\n" +
+               "                showSection('overview');\n" +
+               "            }\n" +
+               "        }\n" +
+               "        \n" +
+               "        // Add keyboard navigation\n" +
+               "        document.addEventListener('keydown', function(event) {\n" +
+               "            if (event.key === 'Escape') {\n" +
+               "                goBack();\n" +
+               "            }\n" +
+               "        });\n" +
                "    </script>\n" +
                "</body>\n" +
                "</html>";

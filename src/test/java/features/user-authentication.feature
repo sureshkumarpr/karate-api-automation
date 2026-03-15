@@ -86,3 +86,23 @@ Scenario Outline: Data-driven login attempts - Should Pass/Fail
     | admin@ossjavahub.com     | admin123     | 200    | success       | true              |
     | invalid@ossjavahub.com   | wrongpass    | 401    | error         | Invalid credentials |
     | ''                       | password123  | 400    | error         | Required fields missing |
+
+Scenario Outline: Registration validation with invalid data - Should Fail
+  Given path '/auth/register'
+  And request { username: '<username>', email: '<email>', password: '<password>', firstName: '<firstName>', lastName: '<lastName>' }
+  When method POST
+  Then status <status>
+  And match response.errorCode == '<errorCode>'
+
+  Examples:
+    | username | email              | password | firstName | lastName | status | errorCode        |
+    | null     | test@test.com      | Pass123  | Test       | User     | 400              | MISSING_FIELDS |
+    | username | invalid-email      | Pass123  | Test       | User     | 400              | INVALID_EMAIL |
+    | user123  | null              | Pass123  | Test       | User     | 400              | MISSING_FIELDS |
+    | user123  | test@test.com      | null     | Test       | User     | 400              | MISSING_FIELDS |
+    | user123  | test@test.com      | Pass123  | null       | User     | 400              | MISSING_FIELDS |
+    | user123  | test@test.com      | Pass123  | Test       | null     | 400              | MISSING_FIELDS |
+    | user123  | test@test.com      | Pass123  | Test       | User     | 400              | MISSING_FIELDS |
+    | ab       | test@test.com      | Pass123  | Test       | User     | 400              | USERNAME_TOO_SHORT |
+    | user123  | invalid-email      | Pass123  | Test       | User     | 400              | INVALID_EMAIL_FORMAT |
+    | @regression | test@test.com | Pass123 | Test | User | 400 | INVALID_USERNAME_FORMAT |
