@@ -110,9 +110,9 @@ public class SinglePageGenerator {
                "        .scenario-item { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 12px 15px; margin: 8px 0; border-radius: 8px; font-size: 0.9em; border-left: 4px solid #667eea; transition: all 0.3s ease; }\n" +
                "        .scenario-item:hover { background: linear-gradient(135deg, #e9ecef, #dee2e6); transform: translateX(5px); }\n" +
                "        .scenario-count { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; display: inline-block; margin-bottom: 10px; }\n" +
-               "        .password-field { background: #fff3cd; border: 2px solid #ffc107; border-radius: 5px; padding: 8px 12px; margin: 5px 0; font-family: monospace; cursor: pointer; transition: all 0.3s ease; }\n" +
-               "        .password-field:hover { background: #ffeaa7; border-color: #ff9f43; }\n" +
-               "        .password-field.revealed { background: #d4edda; border-color: #28a745; }\n" +
+               "        .password-field { background: #fff3cd; border: 2px solid #ffc107; border-radius: 5px; padding: 8px 12px; margin: 5px 0; font-family: monospace; cursor: pointer; transition: all 0.3s ease; display: inline-block; }\n" +
+               "        .password-field:hover { background: #ffeaa7; border-color: #ff9f43; transform: translateY(-1px); }\n" +
+               "        .password-field.revealed { background: #d4edda; border-color: #28a745; font-family: inherit; cursor: default; }\n" +
                "        .endpoints-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 30px; }\n" +
                "        .endpoint-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }\n" +
                "        .endpoint-card h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.4em; border-bottom: 3px solid #667eea; padding-bottom: 10px; }\n" +
@@ -426,25 +426,22 @@ public class SinglePageGenerator {
     private static String processPasswordFields(String text) {
         if (text == null) return "";
         
-        // Mask common password-related patterns
-        String masked = text;
+        // Check if text contains password-related patterns
+        boolean hasPassword = text.matches("(?i).*(password|pwd|token).*");
         
-        // Mask "password" field values
-        masked = masked.replaceAll("(password[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2•••••••$4");
-        
-        // Mask "pwd" field values
-        masked = masked.replaceAll("(pwd[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2•••••••$4");
-        
-        // Mask "token" field values
-        masked = masked.replaceAll("(token[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]{10,})([\"']?)", "$1$2•••••••$4");
-        
-        // Add click functionality if password is masked
-        if (!masked.equals(text)) {
-            masked = "<span class=\"password-field\" onclick=\"this.classList.toggle('revealed'); this.textContent = this.classList.contains('revealed') ? '" + 
-                    escapeHtml(text) + "' : '" + masked + "';\" title=\"Click to reveal\">" + masked + "</span>";
+        if (hasPassword) {
+            // Create masked version with ****
+            String maskedText = text.replaceAll("(?i)(password[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2****$4");
+            maskedText = maskedText.replaceAll("(?i)(pwd[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2****$4");
+            maskedText = maskedText.replaceAll("(?i)(token[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]{10,})([\"']?)", "$1$2****$4");
+            
+            // Create clickable element that shows entire original text when clicked
+            return "<span class=\"password-field\" onclick=\"this.textContent = '" + 
+                   escapeHtml(text) + "'; this.classList.add('revealed');\" title=\"Click to reveal full details\">" + 
+                   maskedText + "</span>";
         }
         
-        return masked;
+        return text;
     }
     
     private static String escapeHtml(String text) {
