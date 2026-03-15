@@ -16,6 +16,9 @@ class SimpleWorkingTestRunner {
         // Generate landing page
         LandingPageGenerator.generateLandingPage();
         
+        // Generate endpoints page
+        EndpointsPageGenerator.generateEndpointsPage();
+        
         // Generate custom HTML report
         ReportGenerator.generateHtmlReport();
     }
