@@ -199,6 +199,13 @@ public class SinglePageGenerator {
                "                        </div>\n" +
                "                    </div>\n" +
                "                </div>\n" +
+               "                \n" +
+               "                <div class=\"card\">\n" +
+               "                    <h2>Test Feature Files</h2>\n" +
+               "                    <div class=\"feature-tiles\">\n" +
+               generateFeatureTilesHtml(features) +
+               "                    </div>\n" +
+               "                </div>\n" +
                "            </div>\n" +
                "        </div>\n" +
                "        \n" +
@@ -388,5 +395,35 @@ public class SinglePageGenerator {
         html.append("                </div>\n");
         
         return html.toString();
+    }
+    
+    private static String generateFeatureTilesHtml(List<FeatureScanner.FeatureInfo> features) {
+        StringBuilder html = new StringBuilder();
+        
+        for (FeatureScanner.FeatureInfo feature : features) {
+            html.append("                    <div class=\"feature-tile\">\n");
+            html.append("                        <h4>").append(escapeHtml(feature.getName())).append("</h4>\n");
+            html.append("                        <div class=\"file-name\">").append(feature.getFileName()).append("</div>\n");
+            html.append("                        <div class=\"scenario-count\">").append(feature.getScenarioCount()).append(" Scenarios</div>\n");
+            html.append("                        <div class=\"scenarios\">\n");
+            
+            for (String scenario : feature.getScenarios()) {
+                html.append("                            <div class=\"scenario-item\">").append(escapeHtml(scenario)).append("</div>\n");
+            }
+            
+            html.append("                        </div>\n");
+            html.append("                    </div>\n");
+        }
+        
+        return html.toString();
+    }
+    
+    private static String escapeHtml(String text) {
+        if (text == null) return "";
+        return text.replace("&", "&amp;")
+                  .replace("<", "&lt;")
+                  .replace(">", "&gt;")
+                  .replace("\"", "&quot;")
+                  .replace("'", "&#39;");
     }
 }
