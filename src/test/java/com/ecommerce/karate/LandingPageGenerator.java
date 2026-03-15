@@ -58,6 +58,12 @@ public class LandingPageGenerator {
     private static String generateLandingPageContent() {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         
+        // Scan all feature files
+        List<FeatureScanner.FeatureInfo> features = FeatureScanner.scanAllFeatures();
+        
+        // Generate feature tiles HTML
+        String featureTilesHtml = generateFeatureTilesHtml(features);
+        
         return "<!DOCTYPE html>\n" +
                "<html lang=\"en\">\n" +
                "<head>\n" +
@@ -88,6 +94,14 @@ public class LandingPageGenerator {
                "        .stat-number { font-size: 2em; font-weight: bold; color: #667eea; }\n" +
                "        .stat-label { color: #7f8c8d; margin-top: 5px; }\n" +
                "        .footer { text-align: center; color: white; margin-top: 40px; opacity: 0.8; }\n" +
+               "        .feature-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }\n" +
+               "        .feature-tile { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; }\n" +
+               "        .feature-tile:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }\n" +
+               "        .feature-tile h4 { color: #2c3e50; margin-bottom: 10px; font-size: 1.1em; }\n" +
+               "        .feature-tile .file-name { color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px; }\n" +
+               "        .feature-tile .scenarios { margin-top: 10px; }\n" +
+               "        .scenario-item { background: #f8f9fa; padding: 8px 12px; margin: 5px 0; border-radius: 5px; font-size: 0.9em; border-left: 3px solid #667eea; }\n" +
+               "        .scenario-count { background: #667eea; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }\n" +
                "        .blinking { animation: blink 1s infinite; }\n" +
                "        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }\n" +
                "        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }\n" +
@@ -99,25 +113,25 @@ public class LandingPageGenerator {
                "<body>\n" +
                "    <div class=\"container\">\n" +
                "        <div class=\"header\">\n" +
-               "            <h1>🧪 Karate Test Report Portal</h1>\n" +
+               "            <h1>Karate Test Report Portal</h1>\n" +
                "            <p>E-commerce API Test Automation Suite</p>\n" +
                "            <p><strong>Generated:</strong> " + timestamp + "</p>\n" +
                "        </div>\n" +
                "        \n" +
                "        <div class=\"content-grid\">\n" +
                "            <div class=\"card\">\n" +
-               "                <h2>🏢 Our Office</h2>\n" +
+               "                <h2>Our Office</h2>\n" +
                "                <div class=\"image-container\">\n" +
                "                    <div class=\"office-image\"></div>\n" +
                "                </div>\n" +
                "                <div class=\"info-section\">\n" +
-               "                    <h3>🚀 Powered By OSS JAVA HUB</h3>\n" +
+               "                    <h3>Powered By OSS JAVA HUB</h3>\n" +
                "                    <p>Chennai, Tamilnadu, India</p>\n" +
                "                </div>\n" +
                "            </div>\n" +
                "            \n" +
                "            <div class=\"card\">\n" +
-               "                <h2>🛒 E-Commerce Testing</h2>\n" +
+               "                <h2>E-Commerce Testing</h2>\n" +
                "                <div class=\"image-container\">\n" +
                "                    <div class=\"cart-image\"></div>\n" +
                "                </div>\n" +
@@ -135,7 +149,7 @@ public class LandingPageGenerator {
                "        </div>\n" +
                "        \n" +
                "        <div class=\"card\">\n" +
-               "            <h2>👥 Project Team</h2>\n" +
+               "            <h2>Project Team</h2>\n" +
                "            <div class=\"content-grid\">\n" +
                "                <div class=\"info-section\">\n" +
                "                    <h3>👨‍💻 Project Author</h3>\n" +
@@ -147,6 +161,13 @@ public class LandingPageGenerator {
                "                    <h3>👨‍🏫 Project Guide</h3>\n" +
                "                    <p><strong>Name:</strong> <span class=\"blinking\">Prabhu.G, MSc(CS), MPhil</span></p>\n" +
                "                </div>\n" +
+               "            </div>\n" +
+               "        </div>\n" +
+               "        \n" +
+               "        <div class=\"card\">\n" +
+               "            <h2>Test Feature Files</h2>\n" +
+               "            <div class=\"feature-tiles\">\n" +
+               featureTilesHtml +
                "            </div>\n" +
                "        </div>\n" +
                "        \n" +
@@ -163,5 +184,35 @@ public class LandingPageGenerator {
                "    </div>\n" +
                "</body>\n" +
                "</html>";
+    }
+    
+    private static String generateFeatureTilesHtml(List<FeatureScanner.FeatureInfo> features) {
+        StringBuilder html = new StringBuilder();
+        
+        for (FeatureScanner.FeatureInfo feature : features) {
+            html.append("                <div class=\"feature-tile\">\n");
+            html.append("                    <h4>").append(escapeHtml(feature.getName())).append("</h4>\n");
+            html.append("                    <div class=\"file-name\">").append(feature.getFileName()).append("</div>\n");
+            html.append("                    <div class=\"scenario-count\">").append(feature.getScenarioCount()).append(" Scenarios</div>\n");
+            html.append("                    <div class=\"scenarios\">\n");
+            
+            for (String scenario : feature.getScenarios()) {
+                html.append("                        <div class=\"scenario-item\">").append(escapeHtml(scenario)).append("</div>\n");
+            }
+            
+            html.append("                    </div>\n");
+            html.append("                </div>\n");
+        }
+        
+        return html.toString();
+    }
+    
+    private static String escapeHtml(String text) {
+        if (text == null) return "";
+        return text.replace("&", "&amp;")
+                  .replace("<", "&lt;")
+                  .replace(">", "&gt;")
+                  .replace("\"", "&quot;")
+                  .replace("'", "&#39;");
     }
 }
