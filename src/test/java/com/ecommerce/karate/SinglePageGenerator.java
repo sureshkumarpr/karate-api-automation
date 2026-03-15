@@ -101,14 +101,18 @@ public class SinglePageGenerator {
                "        .success { background: #28a745; color: white; }\n" +
                "        .warning { background: #ffc107; color: #212529; }\n" +
                "        .danger { background: #dc3545; color: white; }\n" +
-               "        .feature-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }\n" +
-               "        .feature-tile { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; }\n" +
-               "        .feature-tile:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }\n" +
-               "        .feature-tile h4 { color: #2c3e50; margin-bottom: 10px; font-size: 1.1em; }\n" +
-               "        .feature-tile .file-name { color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px; }\n" +
-               "        .feature-tile .scenarios { margin-top: 10px; }\n" +
-               "        .scenario-item { background: #f8f9fa; padding: 8px 12px; margin: 5px 0; border-radius: 5px; font-size: 0.9em; border-left: 3px solid #667eea; }\n" +
-               "        .scenario-count { background: #667eea; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }\n" +
+               "        .feature-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin: 20px 0; }\n" +
+               "        .feature-tile { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: all 0.3s ease; border: 2px solid #e9ecef; }\n" +
+               "        .feature-tile:hover { transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); border-color: #667eea; }\n" +
+               "        .feature-tile h4 { color: #2c3e50; margin-bottom: 15px; font-size: 1.3em; border-bottom: 2px solid #667eea; padding-bottom: 8px; }\n" +
+               "        .feature-tile .file-name { color: #7f8c8d; font-size: 0.95em; margin-bottom: 12px; background: #f8f9fa; padding: 5px 10px; border-radius: 5px; font-weight: bold; }\n" +
+               "        .feature-tile .scenarios { margin-top: 15px; }\n" +
+               "        .scenario-item { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 12px 15px; margin: 8px 0; border-radius: 8px; font-size: 0.9em; border-left: 4px solid #667eea; transition: all 0.3s ease; }\n" +
+               "        .scenario-item:hover { background: linear-gradient(135deg, #e9ecef, #dee2e6); transform: translateX(5px); }\n" +
+               "        .scenario-count { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; display: inline-block; margin-bottom: 10px; }\n" +
+               "        .password-field { background: #fff3cd; border: 2px solid #ffc107; border-radius: 5px; padding: 8px 12px; margin: 5px 0; font-family: monospace; cursor: pointer; transition: all 0.3s ease; }\n" +
+               "        .password-field:hover { background: #ffeaa7; border-color: #ff9f43; }\n" +
+               "        .password-field.revealed { background: #d4edda; border-color: #28a745; }\n" +
                "        .endpoints-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 30px; }\n" +
                "        .endpoint-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }\n" +
                "        .endpoint-card h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.4em; border-bottom: 3px solid #667eea; padding-bottom: 10px; }\n" +
@@ -408,7 +412,8 @@ public class SinglePageGenerator {
             html.append("                        <div class=\"scenarios\">\n");
             
             for (String scenario : feature.getScenarios()) {
-                html.append("                            <div class=\"scenario-item\">").append(escapeHtml(scenario)).append("</div>\n");
+                String processedScenario = processPasswordFields(escapeHtml(scenario));
+                html.append("                            <div class=\"scenario-item\">").append(processedScenario).append("</div>\n");
             }
             
             html.append("                        </div>\n");
@@ -416,6 +421,30 @@ public class SinglePageGenerator {
         }
         
         return html.toString();
+    }
+    
+    private static String processPasswordFields(String text) {
+        if (text == null) return "";
+        
+        // Mask common password-related patterns
+        String masked = text;
+        
+        // Mask "password" field values
+        masked = masked.replaceAll("(password[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2•••••••$4");
+        
+        // Mask "pwd" field values
+        masked = masked.replaceAll("(pwd[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]+)([\"']?)", "$1$2•••••••$4");
+        
+        // Mask "token" field values
+        masked = masked.replaceAll("(token[\"']?\\s*[:=]\\s*)([\"']?)([^\"'\\s]{10,})([\"']?)", "$1$2•••••••$4");
+        
+        // Add click functionality if password is masked
+        if (!masked.equals(text)) {
+            masked = "<span class=\"password-field\" onclick=\"this.classList.toggle('revealed'); this.textContent = this.classList.contains('revealed') ? '" + 
+                    escapeHtml(text) + "' : '" + masked + "';\" title=\"Click to reveal\">" + masked + "</span>";
+        }
+        
+        return masked;
     }
     
     private static String escapeHtml(String text) {
