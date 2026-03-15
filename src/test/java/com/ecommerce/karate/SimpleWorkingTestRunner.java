@@ -4,7 +4,7 @@ import com.intuit.karate.junit5.Karate;
 import org.junit.jupiter.api.Test;
 
 /**
- * Complete E-commerce Test Runner with Landing Page
+ * Single Page Application Test Runner
  */
 class SimpleWorkingTestRunner {
 
@@ -13,13 +13,10 @@ class SimpleWorkingTestRunner {
         // Run all e-commerce feature files
         Karate.run("classpath:features").tags("~@ignore");
         
-        // Generate landing page
-        LandingPageGenerator.generateLandingPage();
+        // Generate single page application
+        SinglePageGenerator.generateSinglePage();
         
-        // Generate endpoints page
-        EndpointsPageGenerator.generateEndpointsPage();
-        
-        // Generate custom HTML report
+        // Generate custom HTML report (for backup)
         ReportGenerator.generateHtmlReport();
     }
 }
