@@ -73,6 +73,8 @@ public class ReportGenerator {
                "        .warning { background: #ffc107; color: #212529; }\n" +
                "        .danger { background: #dc3545; color: white; }\n" +
                "        .footer { text-align: center; margin-top: 30px; color: #7f8c8d; }\n" +
+               "        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border: 2px solid white; border-radius: 25px; text-decoration: none; display: inline-block; margin-bottom: 20px; transition: all 0.3s ease; }\n" +
+               "        .back-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }\n" +
                "        .author-info { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; }\n" +
                "        .author-info h3 { color: #1976d2; margin: 10px 0; }\n" +
                "        .author-info p { margin: 5px 0; font-weight: bold; }\n" +
@@ -91,6 +93,7 @@ public class ReportGenerator {
                "</head>\n" +
                "<body>\n" +
                "    <div class=\"container\">\n" +
+               "        <a href=\"index.html\" class=\"back-btn\">← Back to Home</a>\n" +
                "        <div class=\"header\">\n" +
                "            <h1>🧪 Karate Test Report</h1>\n" +
                "            <p>E-commerce API Test Automation Suite</p>\n" +
