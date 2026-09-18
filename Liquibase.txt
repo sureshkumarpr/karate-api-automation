@@ -1,0 +1,99 @@
+cat << 'EOF' > liquibase-troubleshooting-guide.md
+# Liquibase Deployment & Database Lock Troubleshooting Guide
+
+## Part 1: Core Concepts & Legacy Comparison
+
+### 1. What is a Liquibase Job?
+A **Liquibase job** is an automated task that executes database schema changes (tables, columns, indexes) using Liquibase—an open-source database schema change management tool. In modern microservices, it typically runs as part of the CI/CD pipeline, a Kubernetes Init Container, or during application startup *before* the main app container goes live.
+
+### 2. How is it Handled?
+* **Version Control:** Database migrations are written in human-readable files (YAML, JSON, XML, or SQL) and tracked in Git alongside source code.
+* **Tracking & Idempotency:** Liquibase tracks executed changes in a table called `DATABASECHANGELOG`. It ensures scripts are only run once.
+* **Concurrency Control:** Liquibase uses a table called `DATABASECHANGELOGLOCK` with a `LOCKED` flag to ensure only one process/pod can perform schema upgrades at a time. If a pod crashes mid-migration, this lock remains stuck, blocking future deployments.
+
+### 3. What Was the Legacy Concept Before Liquibase?
+Before database version control tools like Liquibase or Flyway, managing database schemas relied entirely on **manual, error-prone legacy practices**:
+* **Manual SQL Scripts & DDL/DML Files:** Database administrators (DBAs) or developers manually wrote `.sql` scripts (e.g., `v1_add_table.sql`, `v2_alter_column.sql`).
+* **Manual Execution (The "Runbook" Approach):** During a deployment window, a DBA would manually log into production database management tools (like SQL Developer, pgAdmin, or SSMS) and execute scripts sequentially.
+* **Tracking via Spreadsheets or Documentation:** Teams tracked database versions in manual release documents, Word files, or internal wikis (e.g., *"Did we run script 4 on staging yet?"*).
+* **High Risk of Drift:** Because it wasn't tied directly to application code deployment pipelines, schema drift between development, staging, and production environments was extremely common, frequently leading to application crashes upon release.
+
+---
+
+## Part 2: Step-by-Step CLI Prompts for Your Analysis
+
+Use these steps and prompts with your repository access and AI CLI tools (`wibey` or `gh copilot`) to gather your technical evidence tomorrow morning.
+
+### Step 1: Analyze Repository Configuration
+Run this prompt in your repository root to find how Liquibase is configured:
+> **Prompt to AI CLI:**
+> *"Scan this repository and find all configuration files related to Liquibase (such as `application.yml`, `application.properties`, or migration scripts). Show me how database migrations are triggered (e.g., on startup, via init containers, or CI/CD), and check if there are any timeout or lock retry properties configured."*
+
+### Step 2: Analyze Stored Error Logs
+Once you pull the failed pod logs (`cart-liquibase-errors.log`), run this prompt to extract the exact root cause:
+> **Prompt to AI CLI:**
+> *"Analyze the attached error log file (`cart-liquibase-errors.log`). Explain precisely why the deployment failed, whether it was caused by a stuck `DATABASECHANGELOGLOCK`, and what the container exit code or timeout duration was.*
+> 
+> `[Paste the contents of cart-liquibase-errors.log here]`"
+
+---
+
+## Part 3: Technical Briefing Document for the Dev Team
+
+*You can share or present this section during your discussion with the developers.*
+
+### Objective
+Resolve recurring Liquibase database lock (`DATABASECHANGELOGLOCK`) bottlenecks during store deployments to ensure a smooth, scalable rollout across the upcoming 400 stores without requiring manual intervention from the database team.
+
+### The Problem
+* During rolling deployments or simultaneous pod startups, a pod execution failure or timeout often leaves the `DATABASECHANGELOGLOCK` table in a `LOCKED = true` state.
+* Subsequent deployment pods fail instantly because they cannot acquire the lock, stalling the upgrade.
+* Currently, this requires manual escalation to the DB team to clear the lock, which creates an operational bottleneck that will fail to scale when deploying to 400 stores.
+
+### Proposed Solutions for the Development Team
+1. **Decouple Migration from Application Startup:** Move Liquibase execution out of the main application pod runtime into a strict pre-deployment phase (such as a Kubernetes Init Container or a dedicated pipeline step) so application replicas never race for locks.
+2. **Configure Lock Timeouts / Auto-Release:** Review configuration properties to ensure stale locks automatically time out or release cleanly if a pod terminates unexpectedly.
+3. **Pipeline Pre-Check Routine:** Implement an automated safety step in the deployment script that verifies or cleans up stale locks safely before triggering the migration command.
+EOF
+
+
+
+
+Liquibase Deployment & Database Lock Troubleshooting Guide
+Part 1: Core Concepts & Legacy Comparison
+1. What is a Liquibase Job?
+A Liquibase job is an automated task that executes database schema changes (tables, columns, indexes) using Liquibase—an open-source database schema change management tool. In modern microservices, it typically runs as part of the CI/CD pipeline, a Kubernetes Init Container, or during application startup before the main app container goes live.
+2. How is it Handled?
+Version Control: Database migrations are written in human-readable files (YAML, JSON, XML, or SQL) and tracked in Git alongside source code.
+Tracking & Idempotency: Liquibase tracks executed changes in a table called DATABASECHANGELOG. It ensures scripts are only run once.
+Concurrency Control: Liquibase uses a table called DATABASECHANGELOGLOCK with a LOCKED flag to ensure only one process/pod can perform schema upgrades at a time. If a pod crashes mid-migration, this lock remains stuck, blocking future deployments.
+3. What Was the Legacy Concept Before Liquibase?
+Before database version control tools like Liquibase or Flyway, managing database schemas relied entirely on manual, error-prone legacy practices:
+Manual SQL Scripts & DDL/DML Files: Database administrators (DBAs) or developers manually wrote .sql scripts (e.g., v1_add_table.sql, v2_alter_column.sql).
+Manual Execution (The "Runbook" Approach): During a deployment window, a DBA would manually log into production database management tools (like SQL Developer, pgAdmin, or SSMS) and execute scripts sequentially.
+Tracking via Spreadsheets or Documentation: Teams tracked database versions in manual release documents, Word files, or internal wikis (e.g., "Did we run script 4 on staging yet?").
+High Risk of Drift: Because it wasn't tied directly to application code deployment pipelines, schema drift between development, staging, and production environments was extremely common, frequently leading to application crashes upon release.
+Part 2: Step-by-Step CLI Prompts for Your Analysis
+Use these steps and prompts with your repository access and AI CLI tools (wibey or gh copilot) to gather your technical evidence tomorrow morning.
+Step 1: Analyze Repository Configuration
+Run this prompt in your repository root to find how Liquibase is configured:
+Prompt to AI CLI:
+"Scan this repository and find all configuration files related to Liquibase (such as application.yml, application.properties, or migration scripts). Show me how database migrations are triggered (e.g., on startup, via init containers, or CI/CD), and check if there are any timeout or lock retry properties configured."
+Step 2: Analyze Stored Error Logs
+Once you pull the failed pod logs (cart-liquibase-errors.log), run this prompt to extract the exact root cause:
+Prompt to AI CLI:
+"Analyze the attached error log file (cart-liquibase-errors.log). Explain precisely why the deployment failed, whether it was caused by a stuck DATABASECHANGELOGLOCK, and what the container exit code or timeout duration was.
+[Paste the contents of cart-liquibase-errors.log here]"
+Part 3: Technical Briefing Document for the Dev Team
+You can share or present this section during your discussion with the developers.
+Objective
+Resolve recurring Liquibase database lock (DATABASECHANGELOGLOCK) bottlenecks during store deployments to ensure a smooth, scalable rollout across the upcoming 400 stores without requiring manual intervention from the database team.
+The Problem
+During rolling deployments or simultaneous pod startups, a pod execution failure or timeout often leaves the DATABASECHANGELOGLOCK table in a LOCKED = true state.
+Subsequent deployment pods fail instantly because they cannot acquire the lock, stalling the upgrade.
+Currently, this requires manual escalation to the DB team to clear the lock, which creates an operational bottleneck that will fail to scale when deploying to 400 stores.
+Proposed Solutions for the Development Team
+Decouple Migration from Application Startup: Move Liquibase execution out of the main application pod runtime into a strict pre-deployment phase (such as a Kubernetes Init Container or a dedicated pipeline step) so application replicas never race for locks.
+Configure Lock Timeouts / Auto-Release: Review configuration properties to ensure stale locks automatically time out or release cleanly if a pod terminates unexpectedly.
+Pipeline Pre-Check Routine: Implement an automated safety step in the deployment script that verifies or cleans up stale locks safely before triggering the migration command.
+
